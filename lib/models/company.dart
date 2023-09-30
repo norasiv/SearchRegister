@@ -1,17 +1,29 @@
 class Entity {
-  final String name;
-  final String organisasjonsnummer;
+  final List<EntityData> entities;
 
   Entity({
-    required this.name,
-    required this.organisasjonsnummer,
+    required this.entities,
   });
 
   factory Entity.fromJson(Map<String, dynamic> json) {
-    final Map<String, dynamic> entityData = json['_embedded']['enheter'][0];
-    return Entity(
-      name: entityData['navn'] ?? 'Name not found',
-      organisasjonsnummer: entityData['organisasjonsnummer'] ?? 'Organisasjonsnummer not found',
-    );
+    final List<dynamic> entityDataList = json['_embedded']['enheter'];
+    final List<EntityData> entities = entityDataList.map((entityData) {
+      final String name = entityData['navn'] ?? 'Name not found';
+      final String organisasjonsnummer =
+          entityData['organisasjonsnummer'] ?? 'Organisasjonsnummer not found';
+      return EntityData(name: name, organisasjonsnummer: organisasjonsnummer);
+    }).toList();
+
+    return Entity(entities: entities);
   }
+}
+
+class EntityData {
+  final String name;
+  final String organisasjonsnummer;
+
+  EntityData({
+    required this.name,
+    required this.organisasjonsnummer,
+  });
 }

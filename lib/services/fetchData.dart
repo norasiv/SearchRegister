@@ -11,8 +11,7 @@ class DataFetcher {
         final Map<String, dynamic> data = json.decode(response.body);
 
         if (data.containsKey('_embedded') &&
-            data['_embedded'].containsKey('enheter') &&
-            data['_embedded']['enheter'].isNotEmpty) {
+            data['_embedded'].containsKey('enheter')) {
           final entity = Entity.fromJson(data);
           return entity;
         } else {

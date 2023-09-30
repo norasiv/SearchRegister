@@ -1,22 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutterproj/services/fetchData.dart';
-import 'package:http/http.dart' as http;
-
 import '../models/company.dart';
-
+import 'details_page.dart'; // Import the details page
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String entityName = ''; // Store the entity name here
-  String entityNumber = ''; // Store the entityNumber here
+  List<EntityData> entities = [];
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -25,40 +21,93 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchData() async {
-    print("are you there?");
     try {
-      final entity = await DataFetcher.fetchData('https://data.brreg.no/enhetsregisteret/api/enheter?navn=Giant%20Leap%20Technologies');
+      final entity = await DataFetcher.fetchData(
+          'https://data.brreg.no/enhetsregisteret/api/enheter?navn=Giant%20Leap%20Technologies');
       setState(() {
-        entityName = entity.name;
-        entityNumber = entity.organisasjonsnummer;
+        entities = entity.entities;
       });
     } catch (e) {
       print("Error: $e");
-      setState(() {
-        entityName = 'Error: $e';
-        entityNumber = 'Error: $e';
-      });
+      // Handle the error gracefully, e.g., show an error message to the user.
     }
+  }
+
+  // Function to navigate to the details page when an item is tapped
+  void _navigateToDetails(EntityData entity) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => DetailsPage(entity: entity), // Pass the entity data to the details page
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Entity Data'),
+        title: const Text('Brønnøysundregistrene'),
+        backgroundColor: const Color(0xff152D3F),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Entity Name: $entityName',
-              style: TextStyle(fontSize: 20.0),
+            const SizedBox(
+              height: 10.0,
             ),
-            SizedBox(height: 16.0), // Add some spacing
-            Text(
-              'Organisasjonsnummer: $entityNumber',
-              style: TextStyle(fontSize: 20.0),
+            TextField(
+              onChanged: (value) {
+                // Implement search functionality here
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+              decoration: const InputDecoration(
+                labelText: 'Søk etter enheter',
+                suffixIcon: Icon(Icons.search),
+              ),
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: entities.length,
+                itemBuilder: (context, index) {
+                  final entity = entities[index];
+                  if (searchQuery.isNotEmpty &&
+                      !entity.name
+                          .toLowerCase()
+                          .contains(searchQuery.toLowerCase())) {
+                    // Skip items that don't match the search query
+                    return const SizedBox.shrink();
+                  }
+                  return Card(
+                    color: const Color(0xff152D3F),
+                    elevation: 4,
+                    child: GestureDetector(
+                      onTap: () {
+                        _navigateToDetails(entity); // Navigate to details page
+                      },
+                      child: ListTile(
+                        title: Text(
+                          entity.name,
+                          style: const TextStyle(fontSize: 18.0, color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          entity.organisasjonsnummer,
+                          style: const TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.white,
+                            height: 2.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
