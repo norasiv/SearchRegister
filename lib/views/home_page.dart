@@ -37,7 +37,9 @@ class _HomePageState extends State<HomePage> {
   void _navigateToDetails(EntityData entity) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => DetailsPage(entity: entity), // Pass the entity data to the details page
+        builder: (context) => DetailsPage(
+          companyNumber: entity.organisasjonsnummer, // Pass organisasjonsnummer
+        ),
       ),
     );
   }
