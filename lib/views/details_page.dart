@@ -55,20 +55,47 @@ class _DetailsPageState extends State<DetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Entity Name: ${entity.hjemmeside}",
+                    "${entity.navn}",
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    "Organisasjonsnummer: ${entity.organisasjonsnummer}",
+                    "${entity.organisasjonsform.beskrivelse}",
                     style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.normal
                     ),
                   ),
-                  // Add other details as needed
+                  Text(
+                    "${entity.organisasjonsnummer}",
+                    style: const TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.normal
+                    ),
+                  ),
+                  Text(
+                    "Adresse: ${entity.forretningsadresse.adresse}",
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  Text(
+                    "${entity.forretningsadresse.postnummer} ${entity.forretningsadresse.poststed}",
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  Text(
+                    "${entity.naeringskode1.beskrivelse}",
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
                 ],
               );
             } else {

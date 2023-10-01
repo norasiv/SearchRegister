@@ -13,35 +13,41 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<EntityData> entities = [];
   String searchQuery = '';
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    fetchData();
   }
 
   Future<void> fetchData() async {
     try {
-      final entity = await DataFetcher.fetchData<Entity>(
-        'https://data.brreg.no/enhetsregisteret/api/enheter?navn=aboveit',
-            (json) => Entity.fromJson(json), // Use Entity.fromJson to parse the JSON
-      );
       setState(() {
-        entities = entity.entities; // Update the entities list with the fetched data
+        isLoading = true;
+      });
+
+      final entity = await DataFetcher.fetchData<Entity>(
+        'https://data.brreg.no/enhetsregisteret/api/enheter?navn=$searchQuery',
+            (json) => Entity.fromJson(json),
+      );
+
+      setState(() {
+        entities = entity.entities;
+        isLoading = false;
       });
     } catch (e) {
       print("Error: $e");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-
-
-  // Function to navigate to the details page when an item is tapped
   void _navigateToDetails(EntityData entity) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => DetailsPage(
-          companyNumber: entity.number, // Pass organisasjonsnummer
+          companyNumber: entity.number,
         ),
       ),
     );
@@ -63,42 +69,57 @@ class _HomePageState extends State<HomePage> {
             ),
             TextField(
               onChanged: (value) {
-                // Implement search functionality here
                 setState(() {
                   searchQuery = value;
                 });
               },
-              decoration: const InputDecoration(
+              onSubmitted: (value) {
+                // Fetch when user hits enter
+                fetchData();
+              },
+              decoration: InputDecoration(
                 labelText: 'Søk etter enheter',
-                suffixIcon: Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    fetchData();
+                  },
+                ),
               ),
             ),
             const SizedBox(
               height: 10.0,
             ),
-            Expanded(
+            isLoading
+                ? const Center(
+              child: CircularProgressIndicator(),
+            )
+                : searchQuery.isEmpty
+                ? const Center(
+              child: Text(
+                'Søk på bedrifter',
+                style: TextStyle(fontSize: 18.0, color: Colors.black),
+              ),
+            )
+                : Expanded(
               child: ListView.builder(
                 itemCount: entities.length,
                 itemBuilder: (context, index) {
                   final entity = entities[index];
-                  if (searchQuery.isNotEmpty &&
-                      !entity.name
-                          .toLowerCase()
-                          .contains(searchQuery.toLowerCase())) {
-                    // Skip items that don't match the search query
-                    return const SizedBox.shrink();
-                  }
                   return Card(
                     color: const Color(0xff152D3F),
                     elevation: 4,
                     child: GestureDetector(
                       onTap: () {
-                        _navigateToDetails(entity); // Navigate to details page
+                        _navigateToDetails(entity);
                       },
                       child: ListTile(
                         title: Text(
                           entity.name,
-                          style: const TextStyle(fontSize: 18.0, color: Colors.white),
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                          ),
                         ),
                         subtitle: Text(
                           entity.number,
