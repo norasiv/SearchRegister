@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/company.dart';
-import '../services/fetchData.dart'; // Import your DataFetcher class
+import '../models/company_details.dart';
+import '../services/fetchData.dart';
 
 class DetailsPage extends StatefulWidget {
   final String companyNumber;
@@ -12,15 +12,25 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  late Future<Entity> entityData;
+  Future<CompanyDetails?>? companyDetails;
 
   @override
-
   void initState() {
-    print(widget.companyNumber);
     super.initState();
-    entityData = DataFetcher.fetchData(
-        'https://data.brreg.no/enhetsregisteret/api/enheter/$widget.companyNumber');
+    companyDetails = fetchData();
+  }
+
+  Future<CompanyDetails?> fetchData() async {
+    try {
+      final details = await DataFetcher.fetchData<CompanyDetails>(
+        'https://data.brreg.no/enhetsregisteret/api/enheter/${widget.companyNumber}',
+            (json) => CompanyDetails.fromJson(json),
+      );
+      return details;
+    } catch (e) {
+      print("Error: $e");
+      throw e;
+    }
   }
 
   @override
@@ -32,21 +42,28 @@ class _DetailsPageState extends State<DetailsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: FutureBuilder<Entity>(
-          future: entityData,
+        child: FutureBuilder<CompanyDetails?>(
+          future: companyDetails,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
-            } else {
+            } else if (snapshot.hasData) { // Check if data is available
               final entity = snapshot.data!;
-              return const Column(
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "hello",
-                    style: TextStyle(
+                    "Entity Name: ${entity.hjemmeside}",
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "Organisasjonsnummer: ${entity.organisasjonsnummer}",
+                    style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -54,6 +71,8 @@ class _DetailsPageState extends State<DetailsPage> {
                   // Add other details as needed
                 ],
               );
+            } else {
+              return const Text('No data available.');
             }
           },
         ),

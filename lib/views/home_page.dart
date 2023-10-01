@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterproj/services/fetchData.dart';
 import '../models/company.dart';
-import 'details_page.dart'; // Import the details page
+import 'details_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,28 +17,31 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch data when the app starts
+    fetchData();
   }
 
   Future<void> fetchData() async {
     try {
-      final entity = await DataFetcher.fetchData(
-          'https://data.brreg.no/enhetsregisteret/api/enheter?navn=Giant%20Leap%20Technologies');
+      final entity = await DataFetcher.fetchData<Entity>(
+        'https://data.brreg.no/enhetsregisteret/api/enheter?navn=aboveit',
+            (json) => Entity.fromJson(json), // Use Entity.fromJson to parse the JSON
+      );
       setState(() {
-        entities = entity.entities;
+        entities = entity.entities; // Update the entities list with the fetched data
       });
     } catch (e) {
       print("Error: $e");
-      // Handle the error gracefully, e.g., show an error message to the user.
     }
   }
+
+
 
   // Function to navigate to the details page when an item is tapped
   void _navigateToDetails(EntityData entity) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => DetailsPage(
-          companyNumber: entity.organisasjonsnummer, // Pass organisasjonsnummer
+          companyNumber: entity.number, // Pass organisasjonsnummer
         ),
       ),
     );
@@ -98,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                           style: const TextStyle(fontSize: 18.0, color: Colors.white),
                         ),
                         subtitle: Text(
-                          entity.organisasjonsnummer,
+                          entity.number,
                           style: const TextStyle(
                             fontSize: 15.0,
                             color: Colors.white,

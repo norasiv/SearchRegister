@@ -11,7 +11,7 @@ class Entity {
       final String name = entityData['navn'] ?? 'Name not found';
       final String organisasjonsnummer =
           entityData['organisasjonsnummer'] ?? 'Organisasjonsnummer not found';
-      return EntityData(name: name, organisasjonsnummer: organisasjonsnummer);
+      return EntityData(name: name, number: organisasjonsnummer);
     }).toList();
 
     return Entity(entities: entities);
@@ -20,10 +20,10 @@ class Entity {
 
 class EntityData {
   final String name;
-  final String organisasjonsnummer;
+  final String number;
 
   EntityData({
     required this.name,
-    required this.organisasjonsnummer,
+    required this.number,
   });
 }
