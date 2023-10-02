@@ -10,3 +10,4 @@ Disse API'ene er brukt:
 ## Kommentar
 - Jeg valgte fargene basert på brønnøysundregistrene sin farge. Har prøvd å holde det enkelt og ryddig.
 - På detalj-siden har jeg plukket ut den viktigste basis-informasjonen, men appen har tilgang til all infoen fra API'et.
+- Jeg har brukt iPhone 14 Pro som simulator.
