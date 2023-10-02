@@ -37,7 +37,7 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Details Page'),
+        title: const Text("Detaljer"),
         backgroundColor: const Color(0xff152D3F),
       ),
       body: Padding(
@@ -54,29 +54,45 @@ class _DetailsPageState extends State<DetailsPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(
+                    height: 20.0,
+                  ),
                   Text(
-                    "${entity.navn}",
+                    entity.navn,
                     style: const TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  const Text(
+                    "Organisasjonsnummer: ",
+                    style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    "${entity.organisasjonsform.beskrivelse}",
+                    entity.organisasjonsnummer,
                     style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.normal
-                    ),
-                  ),
-                  Text(
-                    "${entity.organisasjonsnummer}",
-                    style: const TextStyle(
-                      fontSize: 15.0,
+                      fontSize: 18.0,
                       fontWeight: FontWeight.normal
                     ),
                   ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  const Text(
+                    "Adresse:",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text(
-                    "Adresse: ${entity.forretningsadresse.adresse}",
+                    "${entity.forretningsadresse.adresse}",
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.normal,
@@ -89,8 +105,35 @@ class _DetailsPageState extends State<DetailsPage> {
                       fontWeight: FontWeight.normal,
                     ),
                   ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  const Text(
+                    "Organisasjonsform:",
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
                   Text(
-                    "${entity.naeringskode1.beskrivelse}",
+                    entity.organisasjonsform.beskrivelse,
+                    style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.normal
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  const Text(
+                    "Næringskode:",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "${entity.naeringskode1.kode} ${entity.naeringskode1.beskrivelse}",
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.normal,
