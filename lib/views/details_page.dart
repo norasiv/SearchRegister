@@ -20,6 +20,7 @@ class _DetailsPageState extends State<DetailsPage> {
     companyDetails = fetchData();
   }
 
+  //Fetches details from new API with companyNumber from home_page
   Future<CompanyDetails?> fetchData() async {
     try {
       final details = await DataFetcher.fetchData<CompanyDetails>(
@@ -142,7 +143,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 ],
               );
             } else {
-              return const Text('No data available.');
+              return const Text('Fant ingen data.');
             }
           },
         ),

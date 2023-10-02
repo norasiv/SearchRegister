@@ -14,23 +14,23 @@ class _HomePageState extends State<HomePage> {
   List<EntityData> entities = [];
   String searchQuery = '';
   bool isLoading = false;
+  bool searchPerformed = false;
 
   @override
   void initState() {
     super.initState();
   }
 
+  //Fetches data with DataFetcher-class using searchQuery
   Future<void> fetchData() async {
     try {
       setState(() {
         isLoading = true;
       });
-
       final entity = await DataFetcher.fetchData<Entity>(
         'https://data.brreg.no/enhetsregisteret/api/enheter?navn=$searchQuery',
             (json) => Entity.fromJson(json),
       );
-
       setState(() {
         entities = entity.entities;
         isLoading = false;
@@ -39,16 +39,19 @@ class _HomePageState extends State<HomePage> {
       print("Error: $e");
       setState(() {
         isLoading = false;
+        entities.clear();
       });
     }
   }
 
+
   void _navigateToDetails(EntityData entity) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => DetailsPage(
-          companyNumber: entity.number,
-        ),
+        builder: (context) =>
+            DetailsPage(
+              companyNumber: entity.number,
+            ),
       ),
     );
   }
@@ -71,24 +74,30 @@ class _HomePageState extends State<HomePage> {
               onChanged: (value) {
                 setState(() {
                   searchQuery = value;
+                  if (searchQuery.isEmpty) {
+                    entities.clear(); // Clear the entities list when searchQuery is empty
+                    searchPerformed = false;
+                  }
                 });
               },
               onSubmitted: (value) {
                 // Fetch when user hits enter
+                searchPerformed = true;
                 fetchData();
               },
               decoration: InputDecoration(
-                labelText: 'Søk etter enheter',
+                labelText: 'Søk på bedrift',
                 suffixIcon: IconButton(
                   icon: Icon(Icons.search),
                   onPressed: () {
+                    searchPerformed = true;
                     fetchData();
                   },
                 ),
               ),
             ),
             const SizedBox(
-              height: 10.0,
+              height: 30.0,
             ),
             isLoading
                 ? const Center(
@@ -96,9 +105,18 @@ class _HomePageState extends State<HomePage> {
             )
                 : searchQuery.isEmpty
                 ? const Center(
+
               child: Text(
                 'Søk på bedrifter',
                 style: TextStyle(fontSize: 18.0, color: Colors.black),
+              ),
+            )
+                : searchPerformed && entities.isEmpty
+        ? const Center(
+              child: Text(
+                'Ingen resultater',
+                style:
+                TextStyle(fontSize: 18.0, color: Colors.black),
               ),
             )
                 : Expanded(
