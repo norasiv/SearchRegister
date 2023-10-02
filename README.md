@@ -1,16 +1,12 @@
-# flutterproj
+# Registersøk
 
-A new Flutter project.
+Flutter app som støtter søk mot https://data.brreg.no.
+I appen kan man søke på navnet til bedrifter i Brønnøysundregisteret. Trykker man seg videre inn på bedriften kan man se diverse detaljer om den. 
 
-## Getting Started
+Disse API'ene er brukt:
+- https://data.brreg.no/enhetsregisteret/api/enheter?navn=Giant%20Leap%20Technologies
+- https://data.brreg.no/enhetsregisteret/api/enheter/982831962
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Kommentar
+- Jeg valgte fargene basert på brønnøysundregistrene sin farge. Har prøvd å holde det enkelt og ryddig.
+- På detalj-siden har jeg plukket ut den viktigste basis-informasjonen, men appen har tilgang til all infoen fra API'et.
